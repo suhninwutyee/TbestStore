@@ -1,0 +1,25 @@
+﻿@model IEnumerable<MVCtesting.Models.Category>
+@{
+    ViewData["Title"] = "Shop By Category";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Shop By Category</h2>
+    <div class="row">
+        @foreach (var category in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm text-center">
+                    <!-- Display category image -->
+                    <img src="@Url.Content("~/Category/" + category.ImageUrl)" alt="@category.Name" class="card-img-top p-3" style="height: 150px; object-fit: contain;" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Name</h5>
+                        <a asp-controller="CustomerCategory" asp-action="SeeMore" asp-route-id="@category.Id" class="btn btn-primary">See more</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

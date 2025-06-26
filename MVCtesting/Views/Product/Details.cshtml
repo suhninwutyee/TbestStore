@@ -1,0 +1,35 @@
+﻿@model MVCtesting.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details - " + Model.Name;
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>@Model.Name</h2>
+
+    <div class="row">
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.ImageFileName))
+            {
+                <img src="@Url.Content("~/Products/" + Model.ImageFileName)" alt="@Model.Name" class="img-fluid rounded shadow" />
+            }
+            else
+            {
+                <img src="~/images/no-image.png" alt="No image available" class="img-fluid rounded shadow" />
+            }
+        </div>
+
+        <div class="col-md-7">
+            <h4>Brand: @Model.Brand?.Name</h4>
+            <h4>Category: @Model.Category?.Name</h4>
+            <h4>Price: @Model.Price</h4>
+            <p><strong>Quantity:</strong> @Model.Quantity</p>
+            <p><strong>Description:</strong> @Model.Description</p>
+
+            <button type="button" class="btn btn-secondary" onclick="history.back();">
+                Back to Order Page
+            </button>
+        </div>
+    </div>
+</div>

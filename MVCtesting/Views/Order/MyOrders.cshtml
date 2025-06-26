@@ -1,0 +1,93 @@
+﻿@model List<MVCtesting.Models.Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    decimal grandTotal = 0;
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">My Orders</h4>
+        </div>
+        <div class="card-body">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
+                </div>
+            }
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> You have not placed any orders yet.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Order Date</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                var total = order.Price * order.Quantity;
+                                grandTotal += total;
+                                <tr>
+                                    <td>@order.ProductName</td>
+                                    <td>@order.OrderDate.ToString("dd MMM yyyy")</td>
+                                    <td>@order.Quantity</td>
+                                    <td>
+                                        <span class="badge bg-@(order.Status == "Completed" ? "success" :
+                                                              order.Status == "Cancelled" ? "danger" : "secondary")">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td>$@total.ToString("F2")</td>
+                                    <td>
+                                        <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id"
+                                           class="btn btn-sm btn-info me-1" title="View Details">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <a asp-controller="Payment" asp-action="Pay" asp-route-id="@order.Id" class="btn btn-sm btn-success ms-1">
+                                                <i class="bi bi-wallet2"></i> Pay Now
+                                            </a>
+                                            <form asp-action="Cancel" asp-route-id="@order.Id" method="post" style="display:inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1"
+                                                        onclick="return confirm('Are you sure you want to cancel this order?');">
+                                                    <i class="bi bi-x-circle"></i> Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+
+                            <!-- Grand Total Row -->
+                            <tr class="table-primary fw-bold">
+                                <td colspan="4" class="text-end">Grand Total:</td>
+                                <td colspan="2">$@grandTotal.ToString("F2")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

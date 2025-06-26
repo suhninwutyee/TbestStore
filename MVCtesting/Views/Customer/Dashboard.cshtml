@@ -1,0 +1,108 @@
+﻿@model List<MVCtesting.Models.Order>
+
+@{
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+    ViewData["Title"] = "Customer Dashboard";
+    var userName = User.Identity.Name;
+    var orderCount = Model?.Count ?? 0;
+    dynamic hot = ViewBag.HotProduct;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">👋 Welcome, @userName!</h2>
+
+    <div class="row g-4">
+        <!-- Orders Card -->
+        <div class="col-md-4">
+            <div class="card shadow border-primary h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-bag-check fs-1 text-primary"></i>
+                    <h5 class="card-title mt-2">My Orders</h5>
+                    <p class="card-text">@orderCount total order(s)</p>
+                    <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-primary w-100">View Orders</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="col-md-4">
+            <div class="card shadow border-success h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-circle fs-1 text-success"></i>
+                    <h5 class="card-title mt-2">My Profile</h5>
+                    <p class="card-text">Manage account and security.</p>
+                    <a asp-controller="Customer" asp-action="Profile" class="btn btn-outline-success w-100">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Card -->
+        <div class="col-md-4">
+            <div class="card shadow border-warning h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-question-circle fs-1 text-warning"></i>
+                    <h5 class="card-title mt-2">Support</h5>
+                    <p class="card-text">Need help? Contact our team.</p>
+                    <a asp-controller="Support" asp-action="Index" class="btn btn-outline-warning w-100">Contact Support</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (hot != null)
+    {
+        <div class="mt-5">
+            <h4 class="text-danger mb-3">🔥 Hot Product of the Week</h4>
+            <div class="card shadow border-danger animate__animated animate__pulse">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="~/Products/20250523160008111.jpg" class="img-fluid rounded-start" alt="@hot.Name" />
+                    </div>
+                    <div class="col-md-8 d-flex align-items-center">
+                        <div class="card-body">
+                            <h5 class="card-title">@hot.Name</h5>
+                            <p class="card-text text-muted">Sold: @hot.QuantitySold units</p>
+                            <p class="card-text"><strong class="text-primary">Price:</strong> $@hot.Price</p>
+                            <a asp-controller="CustomerProduct" asp-action="Details" asp-route-id="@hot.Id" class="btn btn-danger">View Product</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-5">
+        <h4 class="text-secondary mb-3">🧾 Recent Orders</h4>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>@order.Id</td>
+                                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                                <td>@order.Status</td>
+                                <td>$@order.TotalAmount.ToString("F2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">You haven’t placed any orders yet.</p>
+        }
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿@model MVCtesting.Models.CategoryCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto rounded border p-4 shadow" style="background-color: #121212; border-color: #444">
+        <h2 class="text-center mb-4 text-white">Create Category</h2>
+
+        <form asp-action="Create" method="post" novalidate>
+            <div class="row mb-3">
+                <label asp-for="Name" class="col-sm-4 col-form-label text-white">Name</label>
+                <div class="col-sm-8">
+                    <input asp-for="Name" class="form-control bg-dark text-white border-secondary" placeholder="Enter Category Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+           @*  <div class="row mb-3">
+                <label for="SelectedBrandIds" class="col-sm-4 col-form-label text-white">Select Brands</label>
+                <div class="col-sm-8">
+                    <select asp-for="SelectedBrandIds" asp-items="Model.BrandsSelectList" multiple class="form-control bg-dark text-white border-secondary">
+                    </select>
+                    <span asp-validation-for="SelectedBrandIds" class="text-danger"></span>
+                </div>
+            </div> *@
+
+            <div class="row">
+                <div class="offset-sm-4 col-sm-8 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle-fill me-1"></i>Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i>Back to List
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

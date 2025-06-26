@@ -1,0 +1,24 @@
+﻿@model MVCtesting.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>@Model.Name</h2>
+    <p><strong>Brand:</strong> @Model.Brand?.Name ?? "N/A"</p>
+    <p><strong>Price:</strong> $@Model.Price.Value</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+
+    @if (!string.IsNullOrEmpty(Model.ImageFileName))
+    {
+        <img src="~/Products/20250523160008111.jpg" alt="@Model.Name" class="img-fluid my-3" style="max-width: 400px;" />
+    }
+    else
+    {
+        <p>No image available</p>
+    }
+
+    <a asp-controller="Order" asp-action="MyOrders" class="btn btn-secondary mt-3">Back to Orders</a>
+</div>

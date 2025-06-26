@@ -1,0 +1,29 @@
+﻿@model MVCtesting.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml"; // Ensure this path is correct
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i> My Profile</h4>
+        </div>
+
+        <div class="card-body">
+            <dl class="row mb-4">
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+               
+            </dl>
+
+           @*  <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-outline-primary">
+                <i class="bi bi-shield-lock me-1"></i> Change Password
+            </a> *@
+        </div>
+    </div>
+</div>

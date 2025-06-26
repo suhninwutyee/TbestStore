@@ -1,0 +1,77 @@
+﻿@model MVCtesting.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-eye me-2"></i> Order Details (Order #@Model.Id)</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd MMM yyyy")</p>
+            <p>
+                <strong>Status:</strong>
+                <span class="badge bg-@(Model.Status == "Completed" ? "success" :
+                                       Model.Status == "Cancelled" ? "danger" : "secondary")">
+                    @Model.Status
+                </span>
+            </p>
+
+            <hr />
+
+            <h5>Products Ordered</h5>
+
+            @if (Model.OrderItems != null && Model.OrderItems.Any())
+            {
+                decimal total = 0;
+                foreach (var item in Model.OrderItems)
+                {
+                    var productName = item.Product?.Name ?? "(No Product)";
+                    var brandName = item.Product?.Brand?.Name ?? "(No Brand)";
+                    var quantity = item.Quantity;
+                    var price = item.Price;
+                    var subtotal = price * quantity;
+                    total += subtotal;
+
+                    <div class="border rounded p-3 mb-3 shadow-sm d-flex align-items-center">
+                        @* Show product image, fallback if no image path *@
+                        <img src="@(string.IsNullOrEmpty(item.Product?.ImageFileName) ? "/images/no-image.png" : "/Products/" + item.Product.ImageFileName)"
+                             alt="@productName"
+                             class="me-3"
+                             style="width:100px; height:auto; object-fit:contain; border:1px solid #ddd; padding:4px;" />
+
+                        <div>
+                            <h6 class="mb-2">@productName</h6>
+                            <p class="mb-1"><strong>Brand:</strong> @brandName</p>
+                            <p class="mb-1"><strong>Quantity:</strong> @quantity</p>
+                            <p class="mb-1"><strong>Price:</strong> $@price.ToString("F2")</p>
+                            <p class="mb-1"><strong>Subtotal:</strong> $@subtotal.ToString("F2")</p>
+                        </div>
+                    </div>
+                }
+
+                <div class="text-end mt-4">
+                    <h5>
+                        Total Amount:
+                        <strong class="text-success">
+                            $@total.ToString("F2")
+                        </strong>
+                    </h5>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i> No products found in this order.
+                </div>
+            }
+
+            <a asp-action="MyOrders" class="btn btn-outline-secondary mt-4">
+                <i class="bi bi-arrow-left"></i> Back to My Orders
+            </a>
+        </div>
+    </div>
+</div>

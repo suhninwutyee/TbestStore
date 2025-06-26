@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    var isAdmin = User.IsInRole("Admin");
+    var isUser = User.IsInRole("User");
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Welcome!</h1>
+
+@if (isAdmin)
+{
+    <p>You are an <strong>Admin</strong>.</p>
+    <a href="@Url.Action("AdminDashboard", "Home")">Go to Admin Dashboard</a>
+}
+else if (isUser)
+{
+    <p>You are a <strong>User</strong>.</p>
+    <a href="@Url.Action("UserDashboard", "Home")">Go to User Dashboard</a>
+}
+else
+{
+    <p>You have no role assigned.</p>
+}

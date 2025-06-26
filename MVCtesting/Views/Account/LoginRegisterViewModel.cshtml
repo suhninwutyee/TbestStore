@@ -1,0 +1,48 @@
+﻿@* @model LoginRegisterViewModel
+
+<h2>Login</h2>
+<form asp-action="LoginFromCombined" method="post">
+    <div>
+        <label asp-for="Login.Email"></label>
+        <input asp-for="Login.Email" />
+        <span asp-validation-for="Login.Email"></span>
+    </div>
+    <div>
+        <label asp-for="Login.Password"></label>
+        <input asp-for="Login.Password" type="password" />
+        <span asp-validation-for="Login.Password"></span>
+    </div>
+    <div>
+        <input asp-for="Login.RememberMe" /> Remember Me
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+<hr />
+
+<h2>Register</h2>
+<form asp-action="RegisterFromCombined" method="post">
+    <div>
+        <label asp-for="Register.Email"></label>
+        <input asp-for="Register.Email" />
+        <span asp-validation-for="Register.Email"></span>
+    </div>
+    <div>
+        <label asp-for="Register.Password"></label>
+        <input asp-for="Register.Password" type="password" />
+        <span asp-validation-for="Register.Password"></span>
+    </div>
+    <div>
+        <label asp-for="Register.ConfirmPassword"></label>
+        <input asp-for="Register.ConfirmPassword" type="password" />
+        <span asp-validation-for="Register.ConfirmPassword"></span>
+    </div>
+    <button type="submit">Register</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+ *@

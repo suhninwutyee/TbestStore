@@ -1,0 +1,73 @@
+﻿@model MVCtesting.Models.SeeMoreViewModel
+
+@{
+    ViewData["Title"] = "Brands and Products in " + Model.Category.Name;
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 mt-5">Products in @Model.Category.Name</h2>
+
+    <div class="row">
+        @if (Model.Products.Any())
+        {
+            @foreach (var product in Model.Products)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        @* Show product image if available *@
+                        @if (!string.IsNullOrEmpty(product.ImageFileName))
+                        {
+                            <img src="@Url.Content("~/Products/" + product.ImageFileName)" alt="@product.Name" class="card-img-top" style="height: 200px; object-fit: contain;" />
+                        }
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text mb-1"><strong>Brand:</strong> @product.Brand?.Name</p>
+                            <p class="card-text mb-3"><strong>Price:</strong> @product.Price.Value</p>
+                            <p><strong>Quantity:</strong> @product.Quantity</p>
+
+                            <div class="mt-auto d-flex gap-2">
+                                <!-- View Details button -->
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.product_id" class="btn btn-info flex-fill">
+                                    View
+                                </a>
+
+                                <!-- Order form -->
+                                <form asp-controller="CustomerCategory" asp-action="MakeOrder" method="post" class="d-flex flex-fill">
+                                    <input type="hidden" name="productId" value="@product.product_id" />
+                                    <input type="number" name="quantity" value="1" min="1" max="@product.Quantity" class="form-control me-2" style="max-width: 80px;" />
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-primary">
+                                        Order
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p>No products available in this category.</p>
+            </div>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-3">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mt-3">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+</div>

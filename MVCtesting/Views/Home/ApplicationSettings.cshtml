@@ -1,0 +1,33 @@
+﻿@model MVCtesting.Models.ApplicationSetting
+
+@{
+    ViewData["Title"] = "Application Setting";
+
+}
+
+<h2>Application Setting</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<form asp-action="ApplicationSetting" method="post">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="SiteName">Site Name</label>
+        <input asp-for="SiteName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdministratorEmail">Administrator Email</label>
+        <input asp-for="AdministratorEmail" class="form-control" />
+    </div>
+
+    <!-- add more fields if needed -->
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</form>

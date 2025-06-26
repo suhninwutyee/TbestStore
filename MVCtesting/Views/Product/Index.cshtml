@@ -1,0 +1,195 @@
+﻿@model List<MVCtesting.Models.Product> 
+
+@{
+    ViewData["Title"] = "Product List";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+
+<div class="container-fluid px-4">
+    <h2 class="text-center my-4 bg-black text-white p-3">List of Products</h2>
+    
+    <p class="text-end fw-bold me-2">Total Products: @Model.Count</p>
+
+
+    @using (Html.BeginForm("Index", "Product", FormMethod.Get))
+    {
+        <!-- Search Bar -->
+
+        <div class="row g-2 align-items-end mb-3">
+
+            <!-- New Product Button -->
+            <div class="col-auto">
+                <a asp-controller="Product" asp-action="Create" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> New Product
+                </a>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="col-auto">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </a>
+            </div>
+            <div class="col"></div>
+            
+            <!-- Text Search -->
+            <!-- Search TextBox -->
+            <div class="col-md-3 position-relative">
+                <div class="input-group">
+                    <button type="submit" class="btn btn-outline-secondary border-end-0 px-2">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new
+                        {
+                            @class = "form-control border-start-0 pe-5",
+                            placeholder = "Search by Name or Brand",
+                            autocomplete = "off",
+                            id = "searchInput",
+                            style = "background-color: white; color: black;"
+                        })
+                    <button type="button" class="btn position-absolute end-0 top-0 bottom-0 px-2 border-0 bg-transparent"
+                            style="z-index:10;" onclick="document.getElementById('searchInput').value='';">
+                        <i class="bi bi-x-circle text-muted"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Date Search -->
+            <div class="col-md-2">
+                @Html.TextBox("searchDate", ViewBag.CurrentDate as string, new
+                    {
+                        @class = "form-control",
+                        type = "date",
+                        style = "background-color: white; color: black;"
+                    })
+            </div>                  
+        </div>
+
+
+
+    }
+
+    <!-- Product Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Image</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (var obj in Model)
+                    {
+                        <tr>
+                            <td>@obj.product_id</td>
+                            <td>@obj.Name</td>
+                            <td>@(obj.Brand?.Name ?? "-")</td>
+                            <td>@(obj.Category?.Name ?? "-")</td>
+                            <td>@($"{obj.Price:C}")</td>
+                            <td>@obj.Quantity</td>
+                            <td>
+                                <img src="~/Products/@obj.ImageFileName" width="70" height="70" style="object-fit:cover;" class="rounded shadow-sm" />
+                            </td>
+                            <td>@(obj.CreatedAt?.ToString("MM/dd/yyyy") ?? "-")</td>
+                            <td>
+                                <a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.product_id"
+                                   class="btn btn-sm btn-primary me-1" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form asp-controller="Product" asp-action="Delete" asp-route-id="@obj.product_id" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4">No products found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @{
+        int currentPage = ViewBag.CurrentPage ?? 1;
+        int totalPages = ViewBag.TotalPages ?? 1;
+    }
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <form method="get" asp-action="Index" class="d-inline">
+                    <input type="hidden" name="searchString" value="@ViewBag.CurrentFilter" />
+                    <input type="hidden" name="searchDate" value="@ViewBag.CurrentDate" />
+                    <input type="hidden" name="categoryId" value="@ViewBag.SelectedCategory" />
+                    <input type="hidden" name="page" value="@(currentPage - 1)" />
+                    <button type="submit" class="page-link">Previous</button>
+                </form>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <form method="get" asp-action="Index" class="d-inline">
+                        <input type="hidden" name="searchString" value="@ViewBag.CurrentFilter" />
+                        <input type="hidden" name="searchDate" value="@ViewBag.CurrentDate" />
+                        <input type="hidden" name="categoryId" value="@ViewBag.SelectedCategory" />
+                        <input type="hidden" name="page" value="@i" />
+                        <button type="submit" class="page-link">@i</button>
+                    </form>
+                </li>
+            }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <form method="get" asp-action="Index" class="d-inline">
+                    <input type="hidden" name="searchString" value="@ViewBag.CurrentFilter" />
+                    <input type="hidden" name="searchDate" value="@ViewBag.CurrentDate" />
+                    <input type="hidden" name="categoryId" value="@ViewBag.SelectedCategory" />
+                    <input type="hidden" name="page" value="@(currentPage + 1)" />
+                    <button type="submit" class="page-link">Next</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+
+
+
+
+
+
+
+</div>
+
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+

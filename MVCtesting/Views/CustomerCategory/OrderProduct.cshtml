@@ -1,0 +1,72 @@
+﻿@model MVCtesting.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "Order " + Model.ProductName;
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Order Product: @Model.ProductName</h2>
+
+    <div class="row">
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.ImageFileName))
+            {
+                <img src="@Url.Content("~/Products/" + Model.ImageFileName)" alt="@Model.ProductName" class="img-fluid rounded shadow" />
+            }
+            else
+            {
+                <img src="~/images/no-image.png" alt="No image available" class="img-fluid rounded shadow" />
+            }
+        </div>
+
+        <div class="col-md-7">
+            <h4>Brand: @Model.BrandName</h4>
+            <h4>Category: @Model.CategoryName</h4>
+            <h4>Price: $@Model.Price</h4>
+            <p><strong>Quantity:</strong> @Model.Quantity</p>
+
+            <p><strong>Description:</strong> @Model.Description</p>
+
+            <form asp-controller="CustomerCategory" asp-action="SubmitOrder" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                <input type="hidden" name="ProductName" value="@Model.ProductName" />
+                <input type="hidden" name="Price" value="@Model.Price" />
+                <input type="hidden" name="Quantity" value="@Model.Quantity" />
+                <input type="hidden" name="BrandName" value="@Model.BrandName" />
+                <input type="hidden" name="CategoryName" value="@Model.CategoryName" />
+                <input type="hidden" name="Description" value="@Model.Description" />
+                <input type="hidden" name="ImageFileName" value="@Model.ImageFileName" />
+
+                <div class="mb-3">
+                    <label for="Quantity" class="form-label">Quantity</label>
+                    <input type="number" name="Quantity" class="form-control" value="@Model.Quantity" min="1" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="PaymentMethod" class="form-label">Payment Method</label>
+                    <select name="PaymentMethod" class="form-select" required>
+                        <option value="" disabled selected>Select a payment method</option>
+                        <option value="Cash">Cash on Delivery</option>
+                        <option value="Card">Credit/Debit Card</option>
+                        <option value="KBZPay">KBZ Pay</option>
+                        <option value="WavePay">WavePay</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">Place Order</button>
+            </form>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+            }
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+            }
+        </div>
+    </div>
+</div>

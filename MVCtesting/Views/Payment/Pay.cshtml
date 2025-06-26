@@ -1,0 +1,120 @@
+﻿@model MVCtesting.Models.Order
+
+@{
+    ViewData["Title"] = "Make Payment";
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Payment for Order #@Model.Id</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="mb-3">Order Summary</h5>
+            <p><strong>Product:</strong> @Model.ProductName</p>
+            <p>
+                <strong>Total Amount:</strong>
+                $@Model.OrderItems?.Sum(i => i.Price * i.Quantity).ToString("F2")
+            </p>
+
+            <form id="paymentForm" asp-action="ConfirmPayment" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <!-- Payment Method Selection -->
+                <div class="mb-4">
+                    <label class="form-label">Select Payment Method:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="method" id="visaOption" value="Visa" required onchange="togglePaymentFields()" />
+                        <label class="form-check-label" for="visaOption">Visa / Mastercard</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="method" id="kbzOption" value="KBZPay" required onchange="togglePaymentFields()" />
+                        <label class="form-check-label" for="kbzOption">KBZPay</label>
+                    </div>
+                </div>
+
+                <!-- Visa Card Fields -->
+                <div id="visaFields" class="border rounded p-3 mb-4" style="display: none;">
+                    <h6>Card Details</h6>
+                    <div class="mb-3 col-md-6 p-0">
+                        <label class="form-label">Card Number</label>
+                        <input type="text" name="cardNumber" class="form-control w-75" placeholder="1234 5678 9012 3456" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="text" name="expiry" class="form-control w-75" placeholder="MM/YY" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">CVV</label>
+                            <input type="text" name="cvv" class="form-control w-50" placeholder="123" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KBZPay Fields -->
+                <div id="kbzFields" class="border rounded p-3 mb-4" style="display: none;">
+                    <h6>KBZPay Payment</h6>
+                    <div class="mb-3 col-md-4 p-0">
+                        <label class="form-label">KBZPay Phone Number</label>
+                        <input type="text" name="kbzPhone" class="form-control w-75" placeholder="09xxxxxxxxx" />
+                    </div>
+                    <div class="mb-3 text-center">
+                        <img src="/Products/12.png" alt="KBZPay QR Code" class="img-fluid" style="max-width: 200px;" />
+                        <p class="text-muted mt-2">Scan this QR code with your KBZPay app</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="kbzQrProof" class="form-label">Upload KBZPay Payment Screenshot (Optional)</label>
+                        <input type="file" name="kbzQrProof" id="kbzQrProof" class="form-control" accept="image/*" style="max-width: 300px;" />
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Confirm Payment</button>
+                    <a asp-controller="Order" asp-action="MyOrders" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePaymentFields() {
+            const visaSelected = document.getElementById("visaOption").checked;
+            const kbzSelected = document.getElementById("kbzOption").checked;
+
+            document.getElementById("visaFields").style.display = visaSelected ? "block" : "none";
+            document.getElementById("kbzFields").style.display = kbzSelected ? "block" : "none";
+        }
+
+        // Validate payment fields before submitting
+        document.getElementById("paymentForm").addEventListener("submit", function (e) {
+            const visaSelected = document.getElementById("visaOption").checked;
+            const kbzSelected = document.getElementById("kbzOption").checked;
+
+            if (visaSelected) {
+                const card = document.querySelector("input[name='cardNumber']").value.trim();
+                const expiry = document.querySelector("input[name='expiry']").value.trim();
+                const cvv = document.querySelector("input[name='cvv']").value.trim();
+
+                if (!card || !expiry || !cvv) {
+                    alert("Please fill in all Visa card details.");
+                    e.preventDefault();
+                }
+            }
+
+            if (kbzSelected) {
+                const phone = document.querySelector("input[name='kbzPhone']").value.trim();
+                if (!phone) {
+                    alert("Please enter KBZPay phone number.");
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+}

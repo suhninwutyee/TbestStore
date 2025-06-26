@@ -1,0 +1,138 @@
+﻿@model List<MVCtesting.Models.Category>
+
+@{
+    ViewData["Title"] = "Category List";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+<div class="container-fluid px-4">
+    <h2 class="text-center my-4 bg-black text-white p-3 rounded">List of Categories</h2>
+
+    @* Alert Messages *@
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="mb-3 text-end fw-bold">
+        Total Categories: @Model.Count
+    </div>
+
+    @* Search & Filter Form *@
+    <form asp-action="Index" method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-auto">
+            <a asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-circle-fill me-1"></i> New Category
+            </a>
+        </div>
+        <div class="col-auto">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-clockwise me-1"></i> Reset
+            </a>
+        </div>
+        <div class="col"></div>
+
+        <div class="col-md-4 offset-md-1">
+            <div class="input-group position-relative">
+                <button type="submit" class="btn btn-outline-secondary border-end-0 px-2">
+                    <i class="bi bi-search"></i>
+                </button>
+                <input type="text" name="searchString" value="@ViewBag.CurrentFilter" placeholder="Search by Category Name"
+                       class="form-control border-start-0 pe-5" id="searchInput" autocomplete="off"
+                       style="background-color: white; color: black;" />
+                <button type="button" class="btn position-absolute end-0 top-0 bottom-0 px-2 border-0 bg-transparent"
+                        style="z-index:10;" onclick="document.getElementById('searchInput').value=''">
+                    <i class="bi bi-x-circle text-muted"></i>
+                </button>
+            </div>
+        </div>
+        
+    </form>
+
+    @* Category Table *@
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Category Name</th>
+                    <th style="width:150px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int serialNumber = 1 + (currentPage - 1) * 10;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@serialNumber</td>
+                            <td>@item.Name</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary me-1" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        serialNumber++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center py-4">No categories found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* Pagination *@
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <form asp-action="Index" method="get" class="d-inline">
+                    <input type="hidden" name="searchString" value="@ViewBag.CurrentFilter" />
+                    <input type="hidden" name="searchDate" value="@ViewBag.CurrentDate" />
+                    <input type="hidden" name="page" value="@(currentPage - 1)" />
+                    <button class="page-link" type="submit">Previous</button>
+                </form>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <form asp-action="Index" method="get" class="d-inline">
+                        <input type="hidden" name="searchString" value="@ViewBag.CurrentFilter" />
+                        <input type="hidden" name="searchDate" value="@ViewBag.CurrentDate" />
+                        <input type="hidden" name="page" value="@i" />
+                        <button class="page-link" type="submit">@i</button>
+                    </form>
+                </li>
+            }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <form asp-action="Index" method="get" class="d-inline">
+                    <input type="hidden" name="searchString" value="@ViewBag.CurrentFilter" />
+                    <input type="hidden" name="searchDate" value="@ViewBag.CurrentDate" />
+                    <input type="hidden" name="page" value="@(currentPage + 1)" />
+                    <button class="page-link" type="submit">Next</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</div>

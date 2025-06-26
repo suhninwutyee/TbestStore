@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MVCtesting.Models.Product>
+
+@{
+    ViewData["Title"] = "Shop Products";
+}
+
+<h2 class="mb-4">Available Products</h2>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var product in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="@product.ImageFileName" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;" />
+
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title">@product.Name</h6>
+                    <p class="text-muted mb-1">@product.Brand</p>
+                    <p class="fw-bold mb-1">$@product.Price</p>
+
+                    @if (product.Discount > 0)
+                    {
+                        <span class="badge bg-danger mb-2">
+                            @product.Discount% off
+                        </span>
+                    }
+
+                    <a asp-action="AddToCart" asp-route-id="@product.Id" class="btn btn-sm btn-primary mt-auto">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

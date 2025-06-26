@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    .hero-section {
+        padding: 100px 20px;
+        text-align: center;
+        background: #111827;
+        color: #fff;
+        border-bottom: 5px solid #334155;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(transparent, #111827);
+        }
+
+        .hero-section h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards ease-in-out;
+        }
+
+        .hero-section p {
+            font-size: 1.5rem;
+            color: #cbd5e1;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards ease-in-out;
+            animation-delay: 0.5s;
+        }
+
+        .hero-section .btn {
+            margin-top: 30px;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards ease-in-out;
+            animation-delay: 1s;
+        }
+
+    @@keyframes fadeInUp {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .actions {
+        padding: 50px 20px;
+        background: #000022;
+        color: #fff;
+    }
+
+        .actions .card {
+            background: #1f2937;
+            border: none;
+            border-radius: 20px;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards ease-in-out;
+            animation-delay: 0.5s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .actions .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 20px #fff3;
+            }
+
+            .actions .card .card-title {
+                color: #fff;
+                font-size: 1.5rem;
+            }
+
+            .actions .card .card-text {
+                color: #cbd5e1;
+            }
+</style>
+
+
+<section class="hero-section">
+    <h1>Shop Smarter with BeastStore</h1>
+    <p>Your ultimate platform to manage products, brands, and categories with ease.</p>
+    <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg px-4">Shop Now</a>
+</section>
+
+<section class="actions">
+    <h2 class="text-center mb-4">Discover What We Provide</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                <h5 class="card-title"><i class="bi bi-box-seam me-2 fs-4"></i>Products</h5>
+                <p class="card-text">Manage your products efficiently and effortlessly.</p>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-outline-light">View All</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                <h5 class="card-title"><i class="bi bi-tags me-2 fs-4"></i>Categories</h5>
+                <p class="card-text">Organize your products by adding or managing categories.</p>
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-light">View Categories</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                <h5 class="card-title"><i class="bi bi-building me-2 fs-4"></i>Brands</h5>
+                <p class="card-text">Create or view your brands here.</p>
+                <a asp-controller="Brand" asp-action="Index" class="btn btn-outline-light">View Brands</a>
+            </div>
+        </div>
+    </div>
+</section>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
